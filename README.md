@@ -18,7 +18,7 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Frequently Asked Questions***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#faqs)
 
-#Why another fork
+# Why another fork
 
 This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets.
 
