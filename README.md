@@ -25,7 +25,7 @@ The main steps for custom images to a caption generator are as follows:
 4. [Setup dataset for compatibility with original repository](#setup-dataset)
 5. [Train custom network](#training)
 6. Evaluate trained network (optional)
-7. Generate caption predictions using untrained images
+7. [Generate caption predictions using untrained images](#generate-captions)
 
 ## Setup Environment
 
@@ -107,7 +107,7 @@ You may use the --max_images argument followed by an integer to only make captio
 
 The images will be created in <ExperimentName>/img_out/ and the text files with predicted captions will be in the <ExperimentName>/txt_out.  The text files will be named with the same name as the images they were derived from. 
 
-#Summary
+# Summary
 
 A typical training/inference session would be run with the below commands: 
 ```
