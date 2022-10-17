@@ -49,13 +49,13 @@ python 1_dataset_to_json.py <ExperimentName> <AbsoluteImagePath>
 ```
 
 This script, when first run, will create a directory structure within the root of the repository formatted as below:
-*root
-**networks
-***<ExperimentName>
-****data
-****imgs
-*****txts
-****checkpoints
+* root
+** networks
+*** <ExperimentName>
+**** data
+**** imgs
+***** txts
+**** checkpoints
 
 
 ## Setup Dataset
