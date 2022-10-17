@@ -30,8 +30,10 @@ The main steps for custom images to a caption generator are as follows:
 
 ## Setup Environment
 
-While this isn't meant to be a guide for setting up a working python environment, I will list the versions of the libraries that are confirmed to work on this fork below. This was created on a Win 11 machine with the following libraries:
+While this isn't meant to be a guide for setting up a working python environment, I will list the versions of the libraries that are confirmed to work on this fork below. This was created on a Win 11 machine with the following libraries/dependencies:
 * PyTorch 1.11.0 + cu113
+* Argparse
+* 
 
 ## Collect Images Create Captions
 
@@ -41,9 +43,20 @@ This fork expects a dataset in the same format as [MS COCO 2014 caption validati
 
 When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
 
-'''python
-codeBlock = 0
-''' 
+To run the script, use the below command replacing the <ExperimentName> and <AbsoluteImagePath> with values of your choosing. 
+```python
+python 1_dataset_to_json.py <ExperimentName> <AbsoluteImagePath>
+```
+
+This script, when first run, will create a directory structure within the root of the repository formatted as below:
+*root
+**networks
+***<ExperimentName>
+****data
+****imgs
+*****txts
+****checkpoints
+
 
 ## Setup Dataset
 
