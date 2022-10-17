@@ -1,10 +1,24 @@
-This is a fork of [Sagar Vinodababu's](https://github.com/sgrvinod) **[PyTorch Tutorial to Image Captioning](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning)**.
+This is a **[PyTorch](https://pytorch.org) Tutorial to Image Captioning**.
 
-Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning) and appreciate the effort put into this. He has provided a great tutorial and explantion of his implementation of the [_Show, Attend, and Tell_](https://arxiv.org/abs/1502.03044) paper.
+This is the first in [a series of tutorials](https://github.com/sgrvinod/Deep-Tutorials-for-PyTorch) I'm writing about _implementing_ cool models on your own with the amazing PyTorch library.
+
+Basic knowledge of PyTorch, convolutional and recurrent neural networks is assumed.
+
+If you're new to PyTorch, first read [Deep Learning with PyTorch: A 60 Minute Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html) and [Learning PyTorch with Examples](https://pytorch.org/tutorials/beginner/pytorch_with_examples.html).
+
+Questions, suggestions, or corrections can be posted as issues.
+
+I'm using `PyTorch 0.4` in `Python 3.6`.
+
+---
+
+**27 Jan 2020**: Working code for two new tutorials has been added — [Super-Resolution](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Super-Resolution) and [Machine Translation](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Machine-Translation)
+
+---
 
 # Contents
 
-[***Why another fork***](#why-another-fork)
+[***Objective***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#objective)
 
 [***Concepts***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#concepts)
 
@@ -18,9 +32,19 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Frequently Asked Questions***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#faqs)
 
-#Why another fork
+# Objective
 
-This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets.
+**To build a model that can generate a descriptive caption for an image we provide it.**
+
+In the interest of keeping things simple, let's implement the [_Show, Attend, and Tell_](https://arxiv.org/abs/1502.03044) paper. This is by no means the current state-of-the-art, but is still pretty darn amazing. The authors' original implementation can be found [here](https://github.com/kelvinxu/arctic-captions).
+
+This model learns _where_ to look.
+
+As you generate a caption, word by word, you can see the model's gaze shifting across the image.
+
+This is possible because of its _Attention_ mechanism, which allows it to focus on the part of the image most relevant to the word it is going to utter next.
+
+Here are some captions generated on _test_ images not seen during training or validation:
 
 ---
 
