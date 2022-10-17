@@ -97,6 +97,13 @@ network = {
     "start_epoch": 0,
     "epochs": 120,
     "batch_size": 32,
+    "workers": 0,           # for data-loading; right now, only 1 works with h5py
+    "encoder_lr": 0.0001,   # learning rate for encoder if fine-tuning
+    "decoder_lr": 0.0004,   # learning rate for decoder
+    "grad_clip": 5.,        # clip gradients at an absolute value of
+    "alpha_c": 1.,          # regularization parameter for 'doubly stochastic attention', as in the paper
+    "print_freq": 100,      # print training/validation stats every __ batches
+    "no_improvement_quit": 10 #Quit after X amount of epochs with no BLEU improvement
 }
 testing = {
     "path": args.absoluteIMGpath,

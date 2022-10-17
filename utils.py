@@ -77,7 +77,8 @@ def create_input_files(dataset, karpathy_json_path, image_folder, captions_per_i
     word_map['<pad>'] = 0
 
     # Create a base/root name for all output files
-    base_filename = dataset + '_' + str(captions_per_image) + '_cap_per_img_' + str(min_word_freq) + '_min_word_freq'
+    #base_filename = dataset + '_' + str(captions_per_image) + '_cap_per_img_' + str(min_word_freq) + '_min_word_freq'
+    base_filename = dataset #+ '_' + str(captions_per_image) + '_cap_per_img_' + str(min_word_freq) + '_min_word_freq'
 
     # Save word map to a JSON
     with open(os.path.join(output_folder, 'WORDMAP_' + base_filename + '.json'), 'w') as j:
@@ -115,8 +116,8 @@ def create_input_files(dataset, karpathy_json_path, image_folder, captions_per_i
                 # Read images
                 img = Image.open(impaths[i]).convert('RGB')
                 #if len(img.shape) == 2:
-                    #img = img[:, :, np.newaxis]
-                    #img = np.concatenate([img, img, img], axis=2)
+                #    img = img[:, :, np.newaxis]
+                #    img = np.concatenate([img, img, img], axis=2)
                 img = img.resize((256, 256))
                 img = np.array(img)
                 img = img.transpose(2, 0, 1)
@@ -208,7 +209,7 @@ def clip_gradient(optimizer, grad_clip):
 
 
 def save_checkpoint(data_name, epoch, epochs_since_improvement, encoder, decoder, encoder_optimizer, decoder_optimizer,
-                    bleu4, is_best):
+                    bleu4, is_best, ckptPath):
     """
     Saves model checkpoint.
 
@@ -230,10 +231,10 @@ def save_checkpoint(data_name, epoch, epochs_since_improvement, encoder, decoder
              'encoder_optimizer': encoder_optimizer,
              'decoder_optimizer': decoder_optimizer}
     filename = 'checkpoint_' + data_name + '.pth.tar'
-    torch.save(state, filename)
+    torch.save(state, ckptPath + '/' + filename)
     # If this checkpoint is the best so far, store a copy so it doesn't get overwritten by a worse checkpoint
     if is_best:
-        torch.save(state, 'BEST_' + filename)
+        torch.save(state, ckptPath + '/BEST_' + filename)
 
 
 class AverageMeter(object):

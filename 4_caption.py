@@ -1,4 +1,6 @@
+import os
 import torch
+import tqdm
 import torch.nn.functional as F
 import numpy as np
 import json
@@ -7,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import skimage.transform
 import argparse
-from scipy.misc import imread, imresize
+#from scipy.misc import imread, imresize
 from PIL import Image
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -29,11 +31,13 @@ def caption_image_beam_search(encoder, decoder, image_path, word_map, beam_size=
     vocab_size = len(word_map)
 
     # Read image and process
-    img = imread(image_path)
-    if len(img.shape) == 2:
-        img = img[:, :, np.newaxis]
-        img = np.concatenate([img, img, img], axis=2)
-    img = imresize(img, (256, 256))
+    #img = imread(image_path)
+    img = Image.open(image_path).convert('RGB')
+    #if len(img.shape) == 2:
+    #    img = img[:, :, np.newaxis]
+    #    img = np.concatenate([img, img, img], axis=2)
+    img = img.resize((256, 256))
+    img = np.array(img)
     img = img.transpose(2, 0, 1)
     img = img / 255.
     img = torch.FloatTensor(img).to(device)
@@ -104,7 +108,8 @@ def caption_image_beam_search(encoder, decoder, image_path, word_map, beam_size=
             top_k_scores, top_k_words = scores.view(-1).topk(k, 0, True, True)  # (s)
 
         # Convert unrolled indices to actual indices of scores
-        prev_word_inds = top_k_words / vocab_size  # (s)
+        #prev_word_inds = top_k_words // vocab_size  # (s)
+        prev_word_inds = torch.div(top_k_words, vocab_size, rounding_mode='floor')
         next_word_inds = top_k_words % vocab_size  # (s)
 
         # Add new words to sequences, alphas
@@ -147,7 +152,7 @@ def caption_image_beam_search(encoder, decoder, image_path, word_map, beam_size=
     return seq, alphas
 
 
-def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
+def visualize_att(image_path, seq, alphas, rev_word_map, img_name, smooth=True):
     """
     Visualizes caption with weights at every word.
 
@@ -160,14 +165,14 @@ def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
     :param smooth: smooth weights?
     """
     image = Image.open(image_path)
-    image = image.resize([14 * 24, 14 * 24], Image.LANCZOS)
+    image = image.resize([14 * 24, 14 * 24], Image.Resampling.LANCZOS)
 
     words = [rev_word_map[ind] for ind in seq]
 
     for t in range(len(words)):
         if t > 50:
             break
-        plt.subplot(np.ceil(len(words) / 5.), 5, t + 1)
+        plt.subplot(int(np.ceil(len(words) / 5.)), 5, t + 1)
 
         plt.text(0, 1, '%s' % (words[t]), color='black', backgroundcolor='white', fontsize=12)
         plt.imshow(image)
@@ -182,19 +187,30 @@ def visualize_att(image_path, seq, alphas, rev_word_map, smooth=True):
             plt.imshow(alpha, alpha=0.8)
         plt.set_cmap(cm.Greys_r)
         plt.axis('off')
-    plt.show()
+    #plt.show()
+    plt.savefig(f'./networks/{args.datasetName}/img_out/{img_name}')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Show, Attend, and Tell - Tutorial - Generate Caption')
 
-    parser.add_argument('--img', '-i', help='path to image')
-    parser.add_argument('--model', '-m', help='path to model')
-    parser.add_argument('--word_map', '-wm', help='path to word map JSON')
-    parser.add_argument('--beam_size', '-b', default=5, type=int, help='beam size for beam search')
+    parser.add_argument("datasetName", help="Enter the name of the dataset/experiment")
+    #parser.add_argument('--img', '-i', help='path to image')
+    #parser.add_argument('--model', '-m', help='path to model')
+    #parser.add_argument('--word_map', '-wm', help='path to word map JSON')
+    #parser.add_argument('--beam_size', '-b', default=5, type=int, help='beam size for beam search')
+    parser.add_argument('--max_images', help='maximum number of images to process from path', type=int)
+    parser.add_argument('--txt_only', action='store_true', help='Create txt files with no images')
     parser.add_argument('--dont_smooth', dest='smooth', action='store_false', help='do not smooth alpha overlay')
 
     args = parser.parse_args()
+    
+    with open(f'./networks/{args.datasetName}/{args.datasetName}_settings.json', 'r') as jsonFile:
+        setDat = json.load(jsonFile)
+    
+    args.model = f'./networks/{args.datasetName}/checkpoints/BEST_checkpoint_{args.datasetName}.pth.tar'
+    args.word_map = f'./networks/{args.datasetName}/dataset/WORDMAP_{args.datasetName}.json'
+    args.beam_size = setDat['testing']['beam_size']
 
     # Load model
     checkpoint = torch.load(args.model, map_location=str(device))
@@ -209,10 +225,45 @@ if __name__ == '__main__':
     with open(args.word_map, 'r') as j:
         word_map = json.load(j)
     rev_word_map = {v: k for k, v in word_map.items()}  # ix2word
-
-    # Encode, decode with attention and beam search
-    seq, alphas = caption_image_beam_search(encoder, decoder, args.img, word_map, args.beam_size)
-    alphas = torch.FloatTensor(alphas)
-
-    # Visualize caption and attention of best sequence
-    visualize_att(args.img, seq, alphas, rev_word_map, args.smooth)
+    dictionary = [k for k, v in word_map.items()]
+    #print(rev_word_map)
+    
+    #create list of images to process up to max_images
+    fileList = os.listdir(setDat['testing']['path'])
+    fileList = sorted(fileList, reverse=True)
+    
+    imgFiles = []
+    for f in fileList:
+        if args.max_images != None:
+            if len(imgFiles) >= args.max_images:
+                break
+        if f[-3:].lower() in {'jpg', 'png'}:
+            #if not os.path.exists(f'{setDat["testing"]["path"]}/{f[0:-3]}txt'):
+            imgFiles.append(f)
+    
+    print(f'{len(imgFiles)} images running through network)')
+    #run images through network
+    for img in tqdm.tqdm(imgFiles):
+        imgPath = f"{setDat['testing']['path']}/{img}"
+        
+        # Encode, decode with attention and beam search
+        seq, alphas = caption_image_beam_search(encoder, decoder, imgPath, word_map, args.beam_size)
+        alphas = torch.FloatTensor(alphas)
+        #print(seq)
+        
+        #convert to plain text
+        phrase = ""
+        for i in seq:
+            phrase += dictionary[i-1] + ' '
+        phrase = phrase[0:-1] #remove last space
+        phrase = phrase.replace('<start> ', '')
+        phrase = phrase.replace(' <end>', '')
+        #print(phrase)
+        
+        #save txt file
+        with open(f'./networks/{args.datasetName}/txt_out/{img[0:-3]}txt', 'w') as f:
+            f.write(phrase)
+        
+        if not args.txt_only:
+            # Visualize caption and attention of best sequence
+            visualize_att(imgPath, seq, alphas, rev_word_map, img, args.smooth)

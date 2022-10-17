@@ -10,6 +10,8 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Changelog***](#changelog)
 
+[***Summary***](#summary)
+
 # Why another fork
 
 This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets. The original [README.md](README_ORIGINAL.md) has been preserved for information; however, the commands given in the original should not be assumed to work. 
@@ -78,11 +80,44 @@ After a successful run, you should see "Reading TRAIN images and captions, stori
 
 ## Training
 
+Training can be run using: 
+```
+python 3_train.py <ExperimentName>
+```
+The --resume flag will resume training from the best checkpoint, as determined by the BLEU-4 score. The --fineTune flag will unlock some of the layers of the encoder for continued training. The author of the original work suggests running training until no improvement is seen, then re-run training with fine tuning. 
 
+This will run until "epochs" are reached (in the settings file) or if there is no improvement in the BLEU-4 score (also in the settings). The original author describes this in depth. This implementation has not changed that. 
 
 ## Evaluation
 
+--This is not implemented yet--
+
 ## Generate Captions
+
+For inference, run:
+```
+python 4_caption.py datasetName
+```
+The images used for inference can be set in your <ExperimentName>_settings.json file that was created in step 1 under testing>>path as below:
+```
+    "testing": {
+        "path": "d:/temp",
+```
+You may use the --max_images argument followed by an integer to only make captions for X amount of images. You may use the --txt_only switch to create text captions with no images, otherwise the script will create both text files and images. 
+
+The images will be created in <ExperimentName>/img_out/ and the text files with predicted captions will be in the <ExperimentName>/txt_out.  The text files will be named with the same name as the images they were derived from. 
+
+#Summary
+
+A typical training/inference session would be run with the below commands: 
+```
+python 1_dataset_to_json.py testNet c:\path_to_images_and_txt_files
+(edit ./networks/testNet/testNet_settings.json to suit your data)
+python 2_create_input_files.py testNet
+python 3_train.py testNet
+python 3_train.py testNet --resume --fineTune
+python 4_caption.py testNet --max_images 5
+```
 
 # Changelog
 1. Move settable parameters from individual .py files to JSON file, initialized at 1_dataset_to_json.py

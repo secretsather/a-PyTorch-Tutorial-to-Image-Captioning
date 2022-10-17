@@ -22,7 +22,7 @@ with open(f'./networks/{args.datasetName}/{args.datasetName}_settings.json', 'r'
     setDat = json.load(jsonFile)
 
 # Data parameters
-data_folder = f'./networks/{args.datasetName}/data'  # folder with data files saved by create_input_files.py
+data_folder = f'./networks/{args.datasetName}/dataset'  # folder with data files saved by create_input_files.py
 data_name = args.datasetName #'coco_1_cap_per_img_0_min_word_freq'  # base name shared by data files
 
 # Model parameters
@@ -38,19 +38,19 @@ start_epoch = setDat['network']['start_epoch']
 epochs = setDat['network']['epochs']  # number of epochs to train for (if early stopping is not triggered)
 epochs_since_improvement = 0  # keeps track of number of epochs since there's been an improvement in validation BLEU
 batch_size = setDat['network']['batch_size']
-workers = 0  # for data-loading; right now, only 1 works with h5py
-encoder_lr = 1e-4  # learning rate for encoder if fine-tuning
-decoder_lr = 4e-4  # learning rate for decoder
-grad_clip = 5.  # clip gradients at an absolute value of
-alpha_c = 1.  # regularization parameter for 'doubly stochastic attention', as in the paper
+workers = setDat['network']['workers']  # for data-loading; right now, only 1 works with h5py
+encoder_lr = setDat['network']['encoder_lr']  # learning rate for encoder if fine-tuning
+decoder_lr = setDat['network']['decoder_lr']  # learning rate for decoder
+grad_clip = setDat['network']['grad_clip']  # clip gradients at an absolute value of
+alpha_c = setDat['network']['alpha_c']  # regularization parameter for 'doubly stochastic attention', as in the paper
 best_bleu4 = 0.  # BLEU-4 score right now
-print_freq = 100  # print training/validation stats every __ batches
+print_freq = setDat['network']['print_freq']  # print training/validation stats every __ batches
 fine_tune_encoder = args.fineTune # fine-tune encoder?
+
 if args.resume:
     checkpoint = f'./networks/{args.datasetName}/checkpoints/BEST_checkpoint_{args.datasetName}.pth.tar'  # path to checkpoint, None if none
 else:
     checkpoint = None
-
 
 def main():
     """
@@ -60,7 +60,7 @@ def main():
     global best_bleu4, epochs_since_improvement, checkpoint, start_epoch, fine_tune_encoder, data_name, word_map
 
     # Read word map
-    word_map_file = os.path.join(data_folder, 'WORDMAP_' + data_name + '.json')
+    word_map_file = data_folder + '/WORDMAP_' + data_name + '.json'
     with open(word_map_file, 'r') as j:
         word_map = json.load(j)
 
@@ -113,7 +113,7 @@ def main():
     for epoch in range(start_epoch, epochs):
 
         # Decay learning rate if there is no improvement for 8 consecutive epochs, and terminate training after 20
-        if epochs_since_improvement == 10:
+        if epochs_since_improvement == setDat['network']['no_improvement_quit']:
             break
         if epochs_since_improvement > 0 and epochs_since_improvement % 8 == 0:
             adjust_learning_rate(decoder_optimizer, 0.8)
