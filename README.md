@@ -40,6 +40,7 @@ This fork expects a dataset in the same format as [MS COCO 2014 caption validati
 ## Create Dataset JSON
 
 When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
+
 '''python
 codeBlock = 0
 ''' 
