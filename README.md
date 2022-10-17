@@ -41,32 +41,55 @@ This fork expects a dataset in the same format as [MS COCO 2014 caption validati
 
 ## Create Dataset JSON
 
-When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
+When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder with the caption. This script currently only supports one caption per image, but modifying it shouldn't be too hard if you need that to suit your dataset. A script has been provided, [1_dataset_to_json.py](1_dataset_to_json.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
 
 To run the script, use the below command replacing the <ExperimentName> and <AbsoluteImagePath> with values of your choosing. 
 ```python
 python 1_dataset_to_json.py <ExperimentName> <AbsoluteImagePath>
 ```
+You may use a --BYOdataset flag if you're training off a dataset that is already compatible (e.g. MS Coco Captions). In this instance, you will still need to specify the absolute path of your images, as well as the <ExperimentName>, as the script makes a folder structure and settings file for your experiment. 
 
 This script, when first run, will create a directory structure within the root of the repository formatted as below:
-* root
-  * networks
-    * <ExperimentName>
-      * data
-      * imgs
-        * txts
-      * checkpoints
+```
+> root
+  > networks
+    > <ExperimentName>
+      > dataset
+      > img_out
+      > txt_out
+      > checkpoints
+```
 
+Two files will be placed in the <ExperimentName> folder:
+* <ExperimentName>.json - The JSON file for your dataset that is formatted similarly to MSCOCO Captions
+* <ExperimentName>_settings.json - The settings for your network
+
+If you're bringing your own dataset, you do not need to copy any images, only provide the absolute path to them. You should however, make a copy of the .json file and put it in the root of <ExperimentName> while renaming the file to <ExperimentName>.json (i.e. it should have the same name as the directory it is in)
+
+If you're using your own data, you can simply provide a name and the absolute image path (e.g. c:\images). You may edit the <ExperimentName>_settings.json file to suit your network. This will create a JSON file with a 80,10,10 -> train,test,validation split. This number can be changed by editing the [1_dataset_to_json.py](1_dataset_to_json.py) file
 
 ## Setup Dataset
 
+Next, run the 2_create_input_files.py file as the following: 
+```
+python 2_create_input_files.py <ExperimentName>
+```
+
+This file is from the author's orignal work, modified to use the values in the <ExperimentName>_settings.json file. It will make a copy of ALL your images inside the <ExperimentName>/dataset directory, along with the captions. Use with caution, as you may fill your hard drive if working with extremely large datasets since it makes a copy of everything. The h5py file allows python to use the data directly from the hard drive as if it's reading it from memory. This was likely done to reduce processing time and memory footprint, especially if you're using the GPU. The original author also resizes the images to 256x256 in this procedure, so the images being fed to your network may be smaller than their originals. This is okay, since you're only generating captions. 
+
+After a successful run, you should see "Reading TRAIN images and captions, storing to file..." for the train, val, and test images. 
+
 ## Training
+
+
 
 ## Evaluation
 
 ## Generate Captions
 
 # Changelog
+1. Move settable parameters from individual .py files to JSON file, initialized at 1_dataset_to_json.py
+2. Use of PIL.Image in lieu of scipy.misc.imread and scipy.misc.imresize due to depreciation. 
 
 * **Image captioning**. duh.
 
