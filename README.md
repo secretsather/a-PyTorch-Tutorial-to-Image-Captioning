@@ -6,7 +6,7 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Why another fork***](#why-another-fork)
 
-[***Concepts***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#concepts)
+[***Workflow***](#workflow)
 
 [***Workflow***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#overview)
 
@@ -20,7 +20,7 @@ This fork was created to preserve this code, while addressing compatibility into
 # Workflow
 
 The main steps for custom images to a caption generator are as follows: 
-1. Setup environment
+1. [Setup environment](#setup-environment)
 2. Collect images & manually create captions
 3. Create a dataset JSON that mirrors the COCO Captions dataset
 4. Setup dataset for compatibility with [A-Pytorch-Tutorial-To-Image-Captioning](https://github.com/secretsather/a-PyTorch-Tutorial-to-Image-Captioning)
