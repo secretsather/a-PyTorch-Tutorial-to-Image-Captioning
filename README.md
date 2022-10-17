@@ -8,51 +8,51 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Concepts***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#concepts)
 
-[***Overview***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#overview)
+[***Workflow***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#overview)
 
-[***Implementation***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#implementation)
+[***Changelog***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#implementation)
 
-[***Training***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#training)
-
-[***Inference***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#inference)
-
-[***Frequently Asked Questions***](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#faqs)
 
 # Why another fork
 
-This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets.
+This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets. The original [README.md](README_ORIGINAL.md) has been preserved for information; however, the commands given in the original should not be assumed to work. 
 
----
+# Workflow
 
-![](./img/plane.png)
+The main steps for custom images to a caption generator are as follows: 
+1. Setup environment
+2. Collect images & manually create captions
+3. Create a dataset JSON that mirrors the COCO Captions dataset
+4. Setup dataset for compatibility with [A-Pytorch-Tutorial-To-Image-Captioning](https://github.com/secretsather/a-PyTorch-Tutorial-to-Image-Captioning)
+5. Train custom network
+6. Evaluate trained network (optional)
+7. Generate caption predictions using untrained images
 
----
+## Setup Environment
 
-![](./img/boats.png)
+While this isn't meant to be a guide for setting up a working python environment, I will list the versions of the libraries that are confirmed to work on this fork below. This was created on a Win 11 machine with the following libraries:
+* PyTorch 1.11.0 + cu113
 
----
+## Collect Images Create Captions
 
-![](./img/bikefence.png)
+This fork expects a dataset in the same format as [MS COCO 2014 caption validation set](https://github.com/tylin/coco-caption). That said, if you're using a pre-made dataset, you may skip to the next section. 
 
----
+When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
+'''
+#code
+''' 
 
-![](./img/sheep.png)
+## Create Dataset JSON
 
----
+## Setup Dataset
 
-![](./img/babycake.png)
+## Training
 
----
+## Evaluation
 
-![](./img/dogtie.png)
+## Generate Captions
 
----
-
-There are more examples at the [end of the tutorial](https://github.com/sgrvinod/a-PyTorch-Tutorial-to-Image-Captioning#some-more-examples).
-
----
-
-# Concepts
+# Changelog
 
 * **Image captioning**. duh.
 
