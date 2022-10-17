@@ -37,12 +37,12 @@ While this isn't meant to be a guide for setting up a working python environment
 
 This fork expects a dataset in the same format as [MS COCO 2014 caption validation set](https://github.com/tylin/coco-caption). That said, if you're using a pre-made dataset, you may skip to the next section. 
 
-When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
-'''
-#code
-''' 
-
 ## Create Dataset JSON
+
+When using a custom dataset, this fork expects a folder of images, each with a .txt file of the same name in the same folder. A script has been provided, [1_dataset_to_jsons.py](1_dataset_to_jsons.py) which will create a JSON file compatible with the training for this and the original repository, which one may also use for other repositories expecting the same format. The usage of this script is as follows:
+'''python
+codeBlock = 0
+''' 
 
 ## Setup Dataset
 
