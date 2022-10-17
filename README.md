@@ -8,13 +8,13 @@ Please check out his [original work](https://github.com/sgrvinod/a-PyTorch-Tutor
 
 [***Workflow***](#workflow)
 
-[***Changelog***](#changelog)
-
 [***Summary***](#summary)
+
+[***Changelog***](#changelog)
 
 # Why another fork
 
-This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets. The original [README.md](README_ORIGINAL.md) has been preserved for information; however, the commands given in the original should not be assumed to work. 
+This fork was created to preserve this code, while addressing compatibility into future versions of PyTorch and other dependent libraries. Moreover, it is this author's intent to commit many quality of life features as it relates to managing network settings and datasets, while allowing for easy implementation using custom datasets. The original [README.md](docs/README_ORIGINAL.md) has been preserved for information; however, the commands given in the original should not be assumed to work. 
 
 # Workflow
 
